@@ -1,0 +1,22 @@
+on:
+  pull_request:
+    branches:
+    - main
+jobs:
+  my_job:
+    name: deploy_apollo
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: configure
+        run: echo "export APOLLO_ROOT_DIR=$(pwd)" >> ~/.bashrc  && source ~/.bashrc
+      - name: start_docker
+        run: bash docker/scripts/dev_start.sh
+      - name: step_into_docker
+        run: bash docker/scripts/dev_into.sh
+      - name: build_gpu
+        run: ./apollo.sh build_gpu
+      - name: bootstrap
+        run: ./scripts/bootstrap.sh
+    
